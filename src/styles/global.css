@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.post-card {
+  border: 1px solid #ddd;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.post-card-image {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  display: block;
+  object-fit: cover;
+}
+
+.post-card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.post-card p {
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.post-card a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.post-card a:hover {
+  text-decoration: underline;
+}

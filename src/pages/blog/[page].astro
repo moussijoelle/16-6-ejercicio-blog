@@ -1,0 +1,78 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import DefaultLayout from '../../layouts/DefaultLayout.astro';
+
+type Post = CollectionEntry<'posts'>;
+
+export async function getStaticPaths({
+  paginate,
+}: {
+  paginate: (
+    data: Post[],
+    options?: { pageSize?: number }
+  ) => Array<{
+    params: { page: string | number };
+    props: {
+      page: {
+        data: Post[];
+        currentPage: number;
+        lastPage: number;
+        url: { prev?: string; next?: string };
+      };
+    };
+  }>;
+}) {
+  const todosLosPosts = await getCollection('posts');
+
+  const postsOrdenados = todosLosPosts.sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  );
+
+  return paginate(postsOrdenados, { pageSize: 6 });
+}
+
+const { page } = Astro.props as {
+  page: {
+    data: Post[];
+    currentPage: number;
+    lastPage: number;
+    url: { prev?: string; next?: string };
+  };
+};
+
+const posts: Post[] = page.data;
+---
+
+<DefaultLayout>
+  <h1 class="text-3xl font-bold mb-6">Blog de Dibujo</h1>
+
+  <div class="posts-list">
+    {posts.map((post) => (
+      <article class="post-card">
+        <Image
+          src={post.data.image.url}
+          alt={post.data.image.alt}
+          width={800}
+          height={450}
+          class="post-card-image"
+        />
+        <h2>{post.data.title}</h2>
+        <p>{post.data.description}</p>
+        <a href={`/blog/${post.id}`}>Leer más →</a>
+      </article>
+    ))}
+  </div>
+
+  <nav class="flex justify-between items-center mt-10">
+    {page.url.prev
+      ? <a href={page.url.prev}>← Anterior</a>
+      : <span class="text-gray-400">← Anterior</span>}
+
+    <span>Página {page.currentPage} de {page.lastPage}</span>
+
+    {page.url.next
+      ? <a href={page.url.next}>Siguiente →</a>
+      : <span class="text-gray-400">Siguiente →</span>}
+  </nav>
+</DefaultLayout>
